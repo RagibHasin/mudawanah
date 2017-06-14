@@ -1,0 +1,68 @@
+import * as fs from 'fs'
+import * as yml from 'js-yaml'
+import * as hilight from 'highlight.js'
+import * as markdownIt from 'markdown-it'
+
+import { join as pJoin } from 'path'
+
+import Config, { IConfig } from './config'
+
+export interface IPage {
+  title: string
+  id: string
+  locale: string
+  url: string
+}
+
+export default class Pages {
+
+  private readonly config: IConfig
+
+  // url to qualified id
+  private pagesMap: { [url: string]: string } = {}
+  // qualified id to metaPpst
+  private pages: { [fullId: string]: IPage } = {}
+
+  constructor(config: IConfig) {
+    this.config = config
+
+    const dataDir = this.config.global.dataDir
+
+    const md = markdownIt('commonmark', {
+      highlight: (str, lang) => {
+        if (lang && hilight.getLanguage(lang)) {
+          try {
+            return hilight.highlight(lang, str).value
+          } catch (_) { }
+        }
+        return ''
+      }
+    })
+
+    const pageFiles = fs.readdirSync(pJoin(dataDir, 'pages'))
+
+    // load pages from files
+    for (const page of pageFiles) {
+
+      const pageData = fs.readFileSync(pJoin(dataDir, 'pages', page), 'utf8').split('\n\n\n')
+      const meta: IPage = yml.safeLoad(pageData[0])
+
+      fs.writeFileSync(pJoin(config.global.tempDir, 'pages', `${meta.id}.${meta.locale}.html`),
+        md.render(pageData[1]), 'utf8')
+
+      for (const url of meta.url) {
+        this.pagesMap[url] = `${meta.id}.${meta.locale}`
+      }
+
+      this.pages[`${meta.id}.${meta.locale}`] = meta
+    }
+  }
+
+  getPageFromUrl(url: string) {
+    return this.pages[this.pagesMap[url]]
+  }
+
+  getPage(id: string) {
+    return this.pages[id]
+  }
+}

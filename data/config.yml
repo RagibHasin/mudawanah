@@ -1,0 +1,6 @@
+defaultLocale: bn
+locales:
+  bn: বাংলা
+  en: English
+mongo:
+  url: ""
