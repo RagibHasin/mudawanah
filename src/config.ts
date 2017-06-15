@@ -33,12 +33,12 @@ export default function (dataDir: string) {
   const global: GlobalConfig = yml.safeLoad(
     fs.readFileSync(pJoin(dataDir, 'config.yml'), 'utf8'))
 
-  let locales: { [locale: string]: LocaleConfig } = {}
+  const locales: { [locale: string]: LocaleConfig } = {}
 
   const configs = fs.readdirSync(pJoin(dataDir, 'configs'))
 
-  for (let conf of configs) {
-    let locale: LocaleConfig = yml.safeLoad(fs.readFileSync(conf, 'utf8'))
+  for (const conf of configs) {
+    const locale: LocaleConfig = yml.safeLoad(fs.readFileSync(conf, 'utf8'))
     locales[locale.locale] = locale
   }
 

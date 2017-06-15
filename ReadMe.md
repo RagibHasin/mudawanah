@@ -1,3 +1,3 @@
 # Mudawanah
 
-A simple plugin based minimalist blog framework with Pug and TypeScript.
+A simple, plugin-based, minimalist, multilingual 😌 blog framework with Koa, Pug and TypeScript.

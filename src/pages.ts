@@ -11,15 +11,12 @@ export interface IPage {
   title: string
   id: string
   locale: string
-  url: string
 }
 
 export default class Pages {
 
   private readonly config: IConfig
 
-  // url to qualified id
-  private pagesMap: { [url: string]: string } = {}
   // qualified id to metaPpst
   private pages: { [fullId: string]: IPage } = {}
 
@@ -50,16 +47,8 @@ export default class Pages {
       fs.writeFileSync(pJoin(config.global.tempDir, 'pages', `${meta.id}.${meta.locale}.html`),
         md.render(pageData[1]), 'utf8')
 
-      for (const url of meta.url) {
-        this.pagesMap[url] = `${meta.id}.${meta.locale}`
-      }
-
       this.pages[`${meta.id}.${meta.locale}`] = meta
     }
-  }
-
-  getPageFromUrl(url: string) {
-    return this.pages[this.pagesMap[url]]
   }
 
   getPage(id: string) {
