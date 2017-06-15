@@ -91,7 +91,9 @@ export default class Posts {
   }
 
   getPostFromUrl(url: string) {
-    return this.posts[this.postsMap[url]]
+    if (this.postsMap[url]) {
+      return this.posts[this.postsMap[url]]
+    }
   }
 
   getPost(id: string) {
