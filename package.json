@@ -5,11 +5,14 @@
   "cli": "./bin/cli.js",
   "main": "./bin/main.js",
   "typings": "./bin/main.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RagibHasin/mudawanah"
+  },
   "scripts": {
     "build": "gulp",
     "pretest": "gulp test",
     "test": "mocha --opts test/mocha.opts test/bin",
-    "postinstall": "gulp",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --opts test/mocha.opts dist/test",
     "postcoverage": "npm run coverage:remap:lcov",
     "coverage:remap:lcov": "remap-istanbul -i coverage/coverage.json -o coverage/lcov.info -t lcovonly"
