@@ -16,6 +16,7 @@ export interface IPost {
   url: string[]
   tags?: string[]
   view?: string
+  pluginsData?: { [plugin: string]: any }
 }
 
 export default class Posts {

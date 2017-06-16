@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as yargs from 'yargs'
 import * as chalk from 'chalk'
+import * as ask from 'inquirer'
 
 const packageJson = JSON.parse(fs.readFileSync('../package.json', 'utf8'))
 
@@ -12,7 +13,6 @@ function init(args: { dir?: string }) {
   if (args.dir === undefined) {
     args.dir = '.'
   }
-
 
 }
 
