@@ -17,6 +17,15 @@
     "postcoverage": "npm run coverage:remap:lcov",
     "coverage:remap:lcov": "remap-istanbul -i coverage/coverage.json -o coverage/lcov.info -t lcovonly"
   },
+  "keywords": [
+    "blog",
+    "multilingual",
+    "static-site-generator",
+    "mudawanah",
+    "typescript",
+    "koa",
+    "pug"
+  ],
   "author": "Muhammad Ragib Hasin <ragib.hasin@gmail.com>",
   "license": "MIT",
   "dependencies": {
