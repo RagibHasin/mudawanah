@@ -16,7 +16,6 @@
   },
   "author": "Muhammad Ragib Hasin <ragib.hasin@gmail.com>",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
