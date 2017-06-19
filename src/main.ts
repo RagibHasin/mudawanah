@@ -1,4 +1,5 @@
 import * as route from 'koa-router'
+import * as serve from 'koa-static'
 import 'koa-pug'
 
 import * as fs from 'fs'
@@ -117,6 +118,8 @@ export default class Mudawanah {
       }
       await this._renderPage(ctx, page)
     })
+
+    this.blog.use('/assets', serve(this.config.global.assetsDir, { gzip: true }))
   }
 
   private _getLocale(ctx: route.IRouterContext) {
