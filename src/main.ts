@@ -22,9 +22,9 @@ export interface IPlugin {
     index?: Middleware<IPost[]>
     post?: Middleware<IPost>
     page?: Middleware<IPage>
-    initialize(config: IConfig): void
+    initialize(initable: { routes: route, config: IConfig }): void
   }
-  initialize(config: IConfig): void
+  initialize(initable: { routes: route, config: IConfig }): void
 }
 
 export default class Mudawanah {
@@ -72,6 +72,12 @@ export default class Mudawanah {
     this.posts = new Posts(this.config)
     this.pages = new Pages(this.config)
 
+    if (this.config.global.mountPoint === undefined) {
+      this.config.global.mountPoint = mountPoint
+    } else {
+      this.mountPoint = this.config.global.mountPoint
+    }
+
     this.mountPoint = mountPoint
 
     this.blog = new route({ prefix: mountPoint })
@@ -95,7 +101,9 @@ export default class Mudawanah {
 
       ctx.render(pJoin(this.config.global.dataDir, this.config.global.templatesDir, 'index'), {
         global: this.config.global,
+        plugins: this.config.plugins,
         locale: this.config.locales[locale],
+        dict: this.config.locales[locale].dictionary,
         posts: tempPosts
       })
     })
@@ -152,12 +160,12 @@ export default class Mudawanah {
         'page'),
       {
         global: this.config.global,
+        plugins: this.config.plugins,
         locale: this.config.locales[locale],
+        dict: this.config.locales[locale].dictionary,
         page: page,
         text: fs.readFileSync(
-          pJoin(
-            this.config.global.tempDir,
-            'page',
+          pJoin(this.config.global.tempDir, 'page',
             `${page.id}.${page.locale}.html`), 'utf8')
       })
   }
@@ -172,12 +180,12 @@ export default class Mudawanah {
         'post'),
       {
         global: this.config.global,
+        plugins: this.config.plugins,
         locale: this.config.locales[locale],
+        dict: this.config.locales[locale].dictionary,
         post: post,
         text: fs.readFileSync(
-          pJoin(
-            this.config.global.tempDir,
-            'post',
+          pJoin(this.config.global.tempDir, 'post',
             `${post.id}.${post.locale}.html`), 'utf8')
       })
   }
@@ -207,6 +215,6 @@ export default class Mudawanah {
       this.pageMiddlewares.push(plugin.page)
       this.composedPageMiddleware = compose(this.pageMiddlewares)
     }
-    plugin.initialize(this.config)
+    plugin.initialize({ config: this.config, routes: this.blog })
   }
 }

@@ -10,6 +10,7 @@ export interface IGlobalConfig {
     [locale: string]: string
   }
   pages: string[]
+  mountPoint?: string
   dataDir: string
   tempDir: string
   templatesDir: string
@@ -113,6 +114,8 @@ export default function (dataDir: string) {
     }
 
     locale.dictionary = fixDictionary(locale.dictionary, localeId)
+    locale.dictionary['fmtDate'] = (...dates: any[]) => stringify(localeId)('#d', dates)
+    locale.dictionary['fmtNum'] = (...nums: any[]) => stringify(localeId)('#n', nums)
 
     locales[locale.locale] = locale
   }

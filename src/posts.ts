@@ -12,7 +12,7 @@ export interface IPost {
   title: string
   id: string
   locale: string
-  date: string
+  date: Date
   url: string[]
   tags?: string[]
   view?: string
