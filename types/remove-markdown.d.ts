@@ -4,17 +4,15 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 declare module 'remove-markdown' {
-  interface RemoveMarkdown {
-    /**
-     * Strip Markdown formatting from text
-     * @param markdown Markdown text
-     * @param options
-     */
-    (markdown: string, options?: {
-      stripListLeaders?: boolean
-      gfm?: boolean
-    }): string
-  }
+  /**
+   * Strip Markdown formatting from text
+   * @param markdown Markdown text
+   * @param options
+   */
+  type RemoveMarkdown = (markdown: string, options?: {
+    stripListLeaders?: boolean
+    gfm?: boolean
+  }) => string
 
   var rmMD: RemoveMarkdown
 

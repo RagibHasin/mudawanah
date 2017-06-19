@@ -48,7 +48,17 @@ export default class Mudawanah {
 
   private readonly blog: route
 
+  /**
+   * Construct a new Mudawanah.
+   * @param {string} mountPoint From where it is accessible.
+   * @param {string} dataDir Data directory to use.
+   */
   constructor(mountPoint: string, dataDir: string)
+
+  /**
+   * Construct a new Mudawanah with mount pount defaults to '/'.
+   * @param {string} dataDir Data directory to use.
+   */
   constructor(dataDir: string)
 
   constructor(mountPoint: string, dataDir?: string) {
@@ -172,10 +182,17 @@ export default class Mudawanah {
       })
   }
 
+  /**
+   * Get route middlewares for using with Koa.
+   */
   routes() {
     return this.blog.routes()
   }
 
+  /**
+   * Use a plugin.
+   * @param plugin The plugin import to use.
+   */
   use(plugin: IPlugin) {
     this.plugins.push(plugin)
     if (plugin.index) {
