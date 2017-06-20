@@ -17,7 +17,7 @@ export default class Pages {
 
   private readonly config: IConfig
 
-  // qualified id to metaPpst
+  // qualified id to metaPages
   private pages: { [fullId: string]: IPage } = {}
 
   constructor(config: IConfig) {
@@ -53,5 +53,13 @@ export default class Pages {
 
   getPage(id: string) {
     return this.pages[id]
+  }
+
+  getAllPages() {
+    const allPages: IPage[] = []
+    for (const id in this.pages) {
+      allPages.push(this.pages[id])
+    }
+    return allPages
   }
 }

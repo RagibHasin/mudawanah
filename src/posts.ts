@@ -25,7 +25,7 @@ export default class Posts {
 
   // url to qualified id
   private postsMap: { [url: string]: string } = {}
-  // qualified id to metaPpst
+  // qualified id to metaPosts
   private posts: { [fullId: string]: IPost } = {}
   // list of unqualified id by locale
   private postByLocale: { [locale: string]: string[] } = {}
@@ -99,5 +99,13 @@ export default class Posts {
 
   getPost(id: string) {
     return this.posts[id]
+  }
+
+  getAllPosts() {
+    const allPosts: IPost[] = []
+    for (const id in this.posts) {
+      allPosts.push(this.posts[id])
+    }
+    return allPosts
   }
 }

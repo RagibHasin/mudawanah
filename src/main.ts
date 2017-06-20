@@ -22,9 +22,19 @@ export interface IPlugin {
     index?: Middleware<IPost[]>
     post?: Middleware<IPost>
     page?: Middleware<IPage>
-    initialize(initable: { routes: route, config: IConfig }): void
+    initialize(initable: {
+      routes: route,
+      config: IConfig,
+      posts: IPost[],
+      pages: IPage[]
+    }): Promise<void>
   }
-  initialize(initable: { routes: route, config: IConfig }): void
+  initialize(initable: {
+    routes: route,
+    config: IConfig,
+    posts: IPost[],
+    pages: IPage[]
+  }): Promise<void>
 }
 
 export default class Mudawanah {
@@ -215,6 +225,11 @@ export default class Mudawanah {
       this.pageMiddlewares.push(plugin.page)
       this.composedPageMiddleware = compose(this.pageMiddlewares)
     }
-    plugin.initialize({ config: this.config, routes: this.blog })
+    plugin.initialize({
+      config: this.config,
+      routes: this.blog,
+      posts: this.posts.getAllPosts(),
+      pages: this.pages.getAllPages()
+    }).catch()
   }
 }
