@@ -112,7 +112,7 @@ export default class Mudawanah {
         await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
       }
 
-      ctx.render(pJoin(this.config.global.dataDir, this.config.global.templatesDir, 'index'), {
+      await ctx.render(pJoin(this.config.global.dataDir, this.config.global.templatesDir, 'index'), {
         global: this.config.global,
         plugins: this.config.plugins,
         locale: this.config.locales[locale],
@@ -168,7 +168,7 @@ export default class Mudawanah {
     if (this.composedPageMiddleware !== undefined) {
       await this.composedPageMiddleware(page, this.config, async () => { })
     }
-    ctx.render(
+    await ctx.render(
       pJoin(
         this.config.global.dataDir,
         this.config.global.templatesDir,
@@ -190,7 +190,7 @@ export default class Mudawanah {
     if (this.composedPostMiddleware !== undefined) {
       await this.composedPostMiddleware(post, this.config, async () => { })
     }
-    ctx.render(
+    await ctx.render(
       pJoin(
         this.config.global.dataDir,
         this.config.global.templatesDir,
