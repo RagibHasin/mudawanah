@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as os from 'os'
 import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
@@ -41,7 +42,8 @@ export default class Pages {
     // load pages from files
     for (const page of pageFiles) {
 
-      const pageData = fs.readFileSync(pJoin(dataDir, 'pages', page), 'utf8').split('\n\n\n')
+      const pageData = fs.readFileSync(pJoin(dataDir, 'pages', page), 'utf8')
+        .split(os.EOL + os.EOL + os.EOL, 2)
       const meta: IPage = yml.safeLoad(pageData[0])
 
       fs.writeFileSync(pJoin(config.global.tempDir, 'pages', `${meta.id}.${meta.locale}.html`),

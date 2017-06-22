@@ -1,6 +1,6 @@
 import * as route from 'koa-router'
 import * as serve from 'koa-static'
-import 'koa-pug'
+import * as view from 'koa-views'
 
 import * as fs from 'fs'
 import { join as pJoin } from 'path'
@@ -91,6 +91,7 @@ export default class Mudawanah {
     this.mountPoint = mountPoint
 
     this.blog = new route({ prefix: mountPoint })
+    this.blog.use(view(this.config.global.templatesDir, { extension: 'pug' }))
 
     for (const plugin in this.config.plugins) {
       const plugMod: IPlugin = require('mudawanah-' + plugin)
@@ -107,7 +108,9 @@ export default class Mudawanah {
       }
 
       const tempPosts = this.posts.getPostsByLocale(locale)
-      await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
+      if (this.composedIndexMiddleware !== undefined) {
+        await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
+      }
 
       ctx.render(pJoin(this.config.global.dataDir, this.config.global.templatesDir, 'index'), {
         global: this.config.global,
@@ -162,7 +165,9 @@ export default class Mudawanah {
   private async _renderPage(ctx: route.IRouterContext, page: IPage) {
 
     const locale = this._getLocale(ctx)
-    await this.composedPageMiddleware(page, this.config, async () => { })
+    if (this.composedPageMiddleware !== undefined) {
+      await this.composedPageMiddleware(page, this.config, async () => { })
+    }
     ctx.render(
       pJoin(
         this.config.global.dataDir,
@@ -182,7 +187,9 @@ export default class Mudawanah {
 
   private async _renderPost(ctx: route.IRouterContext, post: IPost) {
     const locale = this._getLocale(ctx)
-    await this.composedPostMiddleware(post, this.config, async () => { })
+    if (this.composedPostMiddleware !== undefined) {
+      await this.composedPostMiddleware(post, this.config, async () => { })
+    }
     ctx.render(
       pJoin(
         this.config.global.dataDir,
@@ -201,10 +208,17 @@ export default class Mudawanah {
   }
 
   /**
-   * Get route middlewares for using with Koa.
+   * Get routes middlewares for using with Koa.
    */
   routes() {
     return this.blog.routes()
+  }
+
+  /**
+   * Get allowed method middlewares for using with Koa.
+   */
+  allowedMethods() {
+    return this.blog.allowedMethods()
   }
 
   /**

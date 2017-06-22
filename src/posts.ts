@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as os from 'os'
 import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
@@ -53,7 +54,8 @@ export default class Posts {
     // load posts from files
     for (const post of postFiles) {
 
-      const postData = fs.readFileSync(pJoin(dataDir, 'posts', post), 'utf8').split('\n\n\n')
+      const postData = fs.readFileSync(pJoin(dataDir, 'posts', post), 'utf8')
+        .split(os.EOL + os.EOL + os.EOL, 2)
       const meta: IPost = yml.safeLoad(postData[0])
 
       fs.writeFileSync(pJoin(config.global.tempDir, 'posts', `${meta.id}.${meta.locale}.html`),
