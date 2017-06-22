@@ -87,7 +87,7 @@ export default class Posts {
     const ret: IPost[] = []
 
     for (const handle of handles) {
-      ret.push(this.posts[handle])
+      ret.push(this.posts[handle + '.' + locale])
     }
 
     return ret
