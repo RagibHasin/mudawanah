@@ -149,7 +149,7 @@ export default class Mudawanah {
       usedPlugins: this.config.plugins,
       locale: this.config.locales[locale],
       dict: this.config.locales[locale].dictionary,
-      resolve: this._resolve
+      resolve: this._resolve.bind(this)
     }
     if (additionals === undefined) {
       return base
