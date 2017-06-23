@@ -102,13 +102,9 @@ export default class Mudawanah {
         await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
       }
 
-      await ctx.render('index', {
-        global: this.config.global,
-        usedPlugins: this.config.plugins,
-        locale: this.config.locales[locale],
-        dict: this.config.locales[locale].dictionary,
+      await ctx.render('index', this._viewLocals(locale, {
         posts: tempPosts
-      })
+      }))
     })
 
     this.blog.get('/post/:uri', async (ctx, next) => {
@@ -143,6 +139,24 @@ export default class Mudawanah {
     })
   }
 
+  private _resolve(path: string) {
+    return this.mountPoint === undefined ? path : this.mountPoint + path
+  }
+
+  private _viewLocals(locale: string, additionals?: any) {
+    const base = {
+      global: this.config.global,
+      usedPlugins: this.config.plugins,
+      locale: this.config.locales[locale],
+      dict: this.config.locales[locale].dictionary,
+      resolve: this._resolve
+    }
+    if (additionals === undefined) {
+      return base
+    }
+    return Object.assign(base, additionals)
+  }
+
   private _getLocale(ctx: route.IRouterContext) {
     let locale = ctx.cookies.get('mudawanah-locale')
     if (locale === undefined) {
@@ -158,17 +172,12 @@ export default class Mudawanah {
     if (this.composedPageMiddleware !== undefined) {
       await this.composedPageMiddleware(page, this.config, async () => { })
     }
-    await ctx.render('page',
-      {
-        global: this.config.global,
-        usedPlugins: this.config.plugins,
-        locale: this.config.locales[locale],
-        dict: this.config.locales[locale].dictionary,
-        page: page,
-        text: fs.readFileSync(
-          pJoin(this.config.global.tempDir, 'pages',
-            `${page.id}.${page.locale}.html`), 'utf8')
-      })
+    await ctx.render('page', this._viewLocals(locale, {
+      page: page,
+      text: fs.readFileSync(
+        pJoin(this.config.global.tempDir, 'pages',
+          `${page.id}.${page.locale}.html`), 'utf8')
+    }))
   }
 
   private async _renderPost(ctx: route.IRouterContext, post: IPost) {
@@ -176,17 +185,12 @@ export default class Mudawanah {
     if (this.composedPostMiddleware !== undefined) {
       await this.composedPostMiddleware(post, this.config, async () => { })
     }
-    await ctx.render('post',
-      {
-        global: this.config.global,
-        usedPlugins: this.config.plugins,
-        locale: this.config.locales[locale],
-        dict: this.config.locales[locale].dictionary,
-        post: post,
-        text: fs.readFileSync(
-          pJoin(this.config.global.tempDir, 'posts',
-            `${post.id}.${post.locale}.html`), 'utf8')
-      })
+    await ctx.render('post', this._viewLocals(locale, {
+      post: post,
+      text: fs.readFileSync(
+        pJoin(this.config.global.tempDir, 'posts',
+          `${post.id}.${post.locale}.html`), 'utf8')
+    }))
   }
 
   /**
