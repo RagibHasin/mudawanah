@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as yml from 'js-yaml'
-import { join as pJoin } from 'path'
+import { resolve as pJoin, resolve as pResolve } from 'path'
 
 import stringify from './stringify'
 
@@ -99,7 +99,7 @@ export default function (dataDir: string) {
   }
 
   const plugins: IPluginsConfig = yml.safeLoad(
-    fs.readFileSync(pJoin(dataDir, 'plugins.yml'), 'utf8'))
+    fs.readFileSync(pJoin(dataDir, 'plugins.yml'), 'utf8')) || {}
 
   const locales: { [locale: string]: ILocaleConfig } = {}
 

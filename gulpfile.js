@@ -1,6 +1,7 @@
 const gulp = require('gulp')
 const merge = require('merge-stream')
 const ts = require('gulp-typescript')
+const maps = require('gulp-sourcemaps')
 const tsProj = ts.createProject('tsconfig.json')
 const tslint = require('gulp-tslint')
 const tsc = tsProj()
@@ -8,10 +9,10 @@ const tsc = tsProj()
 const dest = './bin'
 
 gulp.task('build', () => {
-  tsProj.src().pipe(tsc)
+  tsProj.src().pipe(maps.init()).pipe(tsc)
 
   return merge(
-    tsc.js.pipe(gulp.dest(dest)),
+    tsc.js.pipe(maps.write()).pipe(gulp.dest(dest)),
     tsc.dts.pipe(gulp.dest(dest))
   )
 })

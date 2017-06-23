@@ -4,7 +4,7 @@ import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
 
-import { join as pJoin } from 'path'
+import { resolve as pJoin } from 'path'
 
 import Config, { IConfig } from './config'
 

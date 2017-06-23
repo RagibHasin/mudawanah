@@ -3,7 +3,7 @@ import * as serve from 'koa-static'
 import * as view from 'koa-views'
 
 import * as fs from 'fs'
-import { join as pJoin } from 'path'
+import { resolve as pJoin } from 'path'
 
 import Config, { IConfig } from './config'
 import Posts, { IPost } from './posts'
@@ -60,24 +60,10 @@ export default class Mudawanah {
 
   /**
    * Construct a new Mudawanah.
+   * @param {string} dataDir Data directory to use.
    * @param {string} mountPoint From where it is accessible.
-   * @param {string} dataDir Data directory to use.
    */
-  constructor(mountPoint: string, dataDir: string)
-
-  /**
-   * Construct a new Mudawanah with mount pount defaults to '/'.
-   * @param {string} dataDir Data directory to use.
-   */
-  constructor(dataDir: string)
-
-  constructor(mountPoint: string, dataDir?: string) {
-
-    if (dataDir === undefined) {
-      dataDir = mountPoint
-      mountPoint = '/'
-    }
-
+  constructor(dataDir: string, mountPoint?: string) {
     this.config = Config(dataDir)
     this.posts = new Posts(this.config)
     this.pages = new Pages(this.config)
@@ -88,7 +74,9 @@ export default class Mudawanah {
       this.mountPoint = this.config.global.mountPoint
     }
 
-    this.mountPoint = mountPoint
+    if (mountPoint !== undefined) {
+      this.mountPoint = mountPoint
+    }
 
     this.blog = new route({ prefix: mountPoint })
     this.blog.use(view(this.config.global.templatesDir, { extension: 'pug' }))
@@ -97,6 +85,8 @@ export default class Mudawanah {
       const plugMod: IPlugin = require('mudawanah-' + plugin)
       this.use(plugMod)
     }
+
+    this.blog.use('/assets', serve(this.config.global.assetsDir, { gzip: true }))
 
     this.blog.get('/', async (ctx, next) => {
       await next()
@@ -114,7 +104,7 @@ export default class Mudawanah {
 
       await ctx.render('index', {
         global: this.config.global,
-        plugins: this.config.plugins,
+        usedPlugins: this.config.plugins,
         locale: this.config.locales[locale],
         dict: this.config.locales[locale].dictionary,
         posts: tempPosts
@@ -149,8 +139,6 @@ export default class Mudawanah {
       }
       await this._renderPage(ctx, page)
     })
-
-    this.blog.use('/assets', serve(this.config.global.assetsDir, { gzip: true }))
   }
 
   private _getLocale(ctx: route.IRouterContext) {
@@ -171,12 +159,12 @@ export default class Mudawanah {
     await ctx.render('page',
       {
         global: this.config.global,
-        plugins: this.config.plugins,
+        usedPlugins: this.config.plugins,
         locale: this.config.locales[locale],
         dict: this.config.locales[locale].dictionary,
         page: page,
         text: fs.readFileSync(
-          pJoin(this.config.global.tempDir, 'page',
+          pJoin(this.config.global.tempDir, 'pages',
             `${page.id}.${page.locale}.html`), 'utf8')
       })
   }
@@ -189,12 +177,12 @@ export default class Mudawanah {
     await ctx.render('post',
       {
         global: this.config.global,
-        plugins: this.config.plugins,
+        usedPlugins: this.config.plugins,
         locale: this.config.locales[locale],
         dict: this.config.locales[locale].dictionary,
         post: post,
         text: fs.readFileSync(
-          pJoin(this.config.global.tempDir, 'post',
+          pJoin(this.config.global.tempDir, 'posts',
             `${post.id}.${post.locale}.html`), 'utf8')
       })
   }
