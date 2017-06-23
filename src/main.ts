@@ -86,7 +86,7 @@ export default class Mudawanah {
       this.use(plugMod)
     }
 
-    this.blog.use('/assets', serve(this.config.global.assetsDir, { gzip: true }))
+    this.blog.use('/assets/*', serve(this.config.global.assetsDir, { gzip: true }))
 
     this.blog.get('/', async (ctx, next) => {
       await next()
@@ -126,13 +126,15 @@ export default class Mudawanah {
     this.blog.get('/:page', async (ctx, next) => {
       await next()
 
-      let page: IPage
-
       if (ctx.params['page'] === 'post') {
         ctx.redirect(this.mountPoint)
       }
 
-      if (this.config.global.pages.includes(ctx.params['page'])) {
+      let page: IPage
+
+      if (ctx.params['page'] === 'assets') {
+        page = this.pages.getPage('404')
+      } else if (this.config.global.pages.includes(ctx.params['page'])) {
         page = this.pages.getPage(ctx.params['uri'])
       } else {
         page = this.pages.getPage('404')

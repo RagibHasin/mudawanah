@@ -1,6 +1,8 @@
+import * as intl from 'intl'
+
 export default function stringify(locale: string) {
-  const numIntl = Intl.NumberFormat(locale)
-  const dateIntl = Intl.DateTimeFormat(locale)
+  const numIntl = intl.NumberFormat(locale)
+  const dateIntl = intl.DateTimeFormat(locale)
   return (format: string, ...params: any[]) => {
     const pieces = format.split('#')
     let result = pieces[0]
