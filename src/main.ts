@@ -3,7 +3,7 @@ import * as serve from 'koa-static'
 import * as view from 'koa-views'
 
 import * as fs from 'fs'
-import { resolve as pJoin } from 'path'
+import { join as pJoin } from 'path'
 
 import Config, { IConfig } from './config'
 import Posts, { IPost } from './posts'

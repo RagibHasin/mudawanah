@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as yml from 'js-yaml'
-import { resolve as pJoin, resolve as pResolve } from 'path'
+import { join as pJoin, resolve as pResolve } from 'path'
 
 import stringify from './stringify'
 

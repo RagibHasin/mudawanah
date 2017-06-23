@@ -5,7 +5,7 @@ import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
 import * as removeMarkdown from 'remove-markdown'
 
-import { resolve as pJoin } from 'path'
+import { join as pJoin } from 'path'
 
 import Config, { IConfig } from './config'
 
