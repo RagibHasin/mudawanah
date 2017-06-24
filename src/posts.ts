@@ -30,6 +30,8 @@ export default class Posts {
   private posts: { [fullId: string]: IPost } = {}
   // list of unqualified id by locale
   private postByLocale: { [locale: string]: string[] } = {}
+  // list of locales of a post
+  private localesOfPost: { [post: string]: { [locale: string]: string } } = {}
 
   constructor(config: IConfig) {
     this.config = config
@@ -67,6 +69,11 @@ export default class Posts {
         this.postsMap[url] = `${meta.id}.${meta.locale}`
       }
 
+      if (this.localesOfPost[meta.id] === undefined) {
+        this.localesOfPost[meta.id] = {}
+      }
+      this.localesOfPost[meta.id][meta.locale] = meta.url[0]
+
       tempPosts.push(meta)
     }
 
@@ -82,6 +89,7 @@ export default class Posts {
       this.postByLocale[meta.locale].push(meta.id)
     }
   }
+
   getPostsByLocale(locale: string) {
     const handles = this.postByLocale[locale]
     const ret: IPost[] = []
@@ -97,6 +105,10 @@ export default class Posts {
     if (this.postsMap[url]) {
       return this.posts[this.postsMap[url]]
     }
+  }
+
+  getLocalesOfPost(id: string) {
+    return this.localesOfPost[id]
   }
 
   getPost(id: string) {

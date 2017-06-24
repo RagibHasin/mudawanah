@@ -4,6 +4,8 @@ import * as serve from 'koa-static'
 import * as kCompose from 'koa-compose'
 import * as view from 'koa-views'
 
+import expand from 'expand-placeholder'
+
 import * as fs from 'fs'
 import { join as pJoin } from 'path'
 
@@ -106,8 +108,14 @@ export default class Mudawanah {
         await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
       }
 
+      const translations: any = {}
+      for (const gLocale in this.config.global.locales) {
+        translations[gLocale] = this._resolve('')
+      }
+
       await ctx.render('index', this._viewLocals(locale, {
-        posts: tempPosts
+        posts: tempPosts,
+        translations: translations
       }))
     })
 
@@ -153,7 +161,9 @@ export default class Mudawanah {
       usedPlugins: this.config.plugins,
       locale: this.config.locales[locale],
       dict: this.config.locales[locale].dictionary,
-      resolve: this._resolve.bind(this)
+      resolve: this._resolve.bind(this),
+      injectionScript: expand(fs.readFileSync('clientInjection.js', 'utf8'),
+        { uid: this.config.global.uid }, { opening: '#{', closing: '}' })
     }
     if (additionals === undefined) {
       return base
@@ -162,22 +172,28 @@ export default class Mudawanah {
   }
 
   private _getLocale(ctx: route.IRouterContext) {
-    let locale = ctx.cookies.get('mudawanah-locale')
+    let locale = ctx.cookies.get(`mudawanah.${this.config.global.uid}.locale`)
     if (locale === undefined) {
       locale = this.config.global.defaultLocale
-      ctx.cookies.set('mudawanah-locale', locale)
+      ctx.cookies.set(`mudawanah.${this.config.global.uid}.locale`, locale)
     }
     return locale
   }
 
   private async _renderPage(ctx: route.IRouterContext, page: IPage) {
-
     const locale = this._getLocale(ctx)
     if (this.composedPageMiddleware !== undefined) {
       await this.composedPageMiddleware(page, this.config, async () => { })
     }
+
+    const translations: any = {}
+    for (const gLocale in this.config.global.locales) {
+      translations[gLocale] = this._resolve(page.id)
+    }
+
     await ctx.render('page', this._viewLocals(locale, {
       page: page,
+      translations: translations,
       text: fs.readFileSync(
         pJoin(this.config.global.tempDir, 'pages',
           `${page.id}.${page.locale}.html`), 'utf8')
@@ -189,8 +205,13 @@ export default class Mudawanah {
     if (this.composedPostMiddleware !== undefined) {
       await this.composedPostMiddleware(post, this.config, async () => { })
     }
+
+    const translations = this.posts.getLocalesOfPost(post.id)
+    delete translations[post.id]
+
     await ctx.render('post', this._viewLocals(locale, {
       post: post,
+      translations: translations,
       text: fs.readFileSync(
         pJoin(this.config.global.tempDir, 'posts',
           `${post.id}.${post.locale}.html`), 'utf8')

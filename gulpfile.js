@@ -1,14 +1,28 @@
 const gulp = require('gulp')
 const merge = require('merge-stream')
 const ts = require('gulp-typescript')
-const maps = require('gulp-sourcemaps')
-const tsProj = ts.createProject('tsconfig.json')
 const tslint = require('gulp-tslint')
+const maps = require('gulp-sourcemaps')
+const ugly = require('gulp-uglify')
+const pump = require('pump')
+const tsProj = ts.createProject('tsconfig.json')
 const tsc = tsProj()
 
 const dest = './bin'
 
-gulp.task('build', () => {
+gulp.task('build-helper', (cb) => {
+  const tsProj = ts.createProject('tsconfig.json',
+    { declaration: false, target: 'es5' })
+  const tsc = tsProj()
+  gulp.src('./src/client*.ts').pipe(tsc)
+  pump(
+    tsc.js,
+    ugly(),
+    gulp.dest(dest),
+    cb)
+})
+
+gulp.task('build', ['build-helper'], () => {
   tsProj.src().pipe(maps.init()).pipe(tsc)
 
   return merge(

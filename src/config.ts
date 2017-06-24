@@ -9,6 +9,7 @@ export interface IGlobalConfig {
   locales: {
     [locale: string]: string
   }
+  uid: string
   pages: string[]
   mountPoint?: string
   dataDir: string
