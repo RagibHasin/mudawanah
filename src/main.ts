@@ -1,5 +1,7 @@
 import * as route from 'koa-router'
+import * as mount from 'koa-mount'
 import * as serve from 'koa-static'
+import * as kCompose from 'koa-compose'
 import * as view from 'koa-views'
 
 import * as fs from 'fs'
@@ -56,6 +58,7 @@ export default class Mudawanah {
   private composedPostMiddleware: Middleware<IPost>
   private composedPageMiddleware: Middleware<IPage>
 
+  private readonly assetsMount: route.IMiddleware
   private readonly blog: route
 
   /**
@@ -76,6 +79,9 @@ export default class Mudawanah {
 
     if (mountPoint !== undefined) {
       this.mountPoint = mountPoint
+      this.assetsMount = mount(mountPoint + '/assets', serve(this.config.global.assetsDir))
+    } else {
+      this.assetsMount = mount('/assets', serve(this.config.global.assetsDir))
     }
 
     this.blog = new route({ prefix: mountPoint })
@@ -85,8 +91,6 @@ export default class Mudawanah {
       const plugMod: IPlugin = require('mudawanah-' + plugin)
       this.use(plugMod)
     }
-
-    this.blog.use('/assets/*', serve(this.config.global.assetsDir, { gzip: true }))
 
     this.blog.get('/', async (ctx, next) => {
       await next()
@@ -194,17 +198,10 @@ export default class Mudawanah {
   }
 
   /**
-   * Get routes middlewares for using with Koa.
+   * Get composed middleware for using with Koa.
    */
-  routes() {
-    return this.blog.routes()
-  }
-
-  /**
-   * Get allowed method middlewares for using with Koa.
-   */
-  allowedMethods() {
-    return this.blog.allowedMethods()
+  middlewares() {
+    return kCompose([this.assetsMount, this.blog.routes(), this.blog.allowedMethods()])
   }
 
   /**
