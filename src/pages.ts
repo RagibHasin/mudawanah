@@ -43,7 +43,7 @@ export default class Pages {
     for (const page of pageFiles) {
 
       const pageData = fs.readFileSync(pJoin(dataDir, 'pages', page), 'utf8')
-        .split(os.EOL + os.EOL + os.EOL, 2)
+        .split(os.EOL + os.EOL + os.EOL + os.EOL, 2)
       const meta: IPage = yml.safeLoad(pageData[0])
 
       fs.writeFileSync(pJoin(config.global.tempDir, 'pages', `${meta.id}.${meta.locale}.html`),

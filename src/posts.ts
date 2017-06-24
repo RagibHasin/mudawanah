@@ -55,13 +55,13 @@ export default class Posts {
     for (const post of postFiles) {
 
       const postData = fs.readFileSync(pJoin(dataDir, 'posts', post), 'utf8')
-        .split(os.EOL + os.EOL + os.EOL, 2)
+        .split(os.EOL + os.EOL + os.EOL + os.EOL, 2)
       const meta: IPost = yml.safeLoad(postData[0])
 
       fs.writeFileSync(pJoin(config.global.tempDir, 'posts', `${meta.id}.${meta.locale}.html`),
         md.render(postData[1]), 'utf8')
 
-      meta.view = removeMarkdown(postData[1], { gfm: true })
+      meta.view = removeMarkdown(postData[1].split(os.EOL + os.EOL, 1)[0], { gfm: true })
 
       for (const url of meta.url) {
         this.postsMap[url] = `${meta.id}.${meta.locale}`
