@@ -114,8 +114,8 @@ export default function (dataDir: string) {
     }
 
     locale.dictionary = fixDictionary(locale.dictionary, localeId)
-    locale.dictionary['fmtDate'] = (...dates: any[]) => stringify(localeId)('#d', dates)
-    locale.dictionary['fmtNum'] = (...nums: any[]) => stringify(localeId)('#n', nums)
+    locale.dictionary['fmtDate'] = (...dates: any[]) => stringify(localeId)('#d', dates[0])
+    locale.dictionary['fmtNum'] = (...nums: any[]) => stringify(localeId)('#n', nums[0])
 
     locales[locale.locale] = locale
   }
