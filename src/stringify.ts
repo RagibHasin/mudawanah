@@ -2,7 +2,15 @@ import * as intl from 'intl'
 
 export default function stringify(locale: string) {
   const numIntl = intl.NumberFormat(locale)
-  const dateIntl = intl.DateTimeFormat(locale)
+  const dateIntl = intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  })
   return (format: string, ...params: any[]) => {
     const pieces = format.split('#')
     let result = pieces[0]

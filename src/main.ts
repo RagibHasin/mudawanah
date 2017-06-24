@@ -114,7 +114,7 @@ export default class Mudawanah {
     this.blog.get('/post/:uri', async (ctx, next) => {
       await next()
 
-      const post = this.posts.getPostFromUrl(ctx.params['uri'])
+      const post = this.posts.getPostFromUrl(ctx.params.uri)
 
       if (post) {
         await this._renderPost(ctx, post)
@@ -126,16 +126,16 @@ export default class Mudawanah {
     this.blog.get('/:page', async (ctx, next) => {
       await next()
 
-      if (ctx.params['page'] === 'post') {
+      if (ctx.params.page === 'post') {
         ctx.redirect(this.mountPoint)
       }
 
       let page: IPage
 
-      if (ctx.params['page'] === 'assets') {
+      if (ctx.params.page === 'assets') {
         page = this.pages.getPage('404')
-      } else if (this.config.global.pages.includes(ctx.params['page'])) {
-        page = this.pages.getPage(ctx.params['uri'])
+      } else if (this.config.global.pages.includes(ctx.params.page)) {
+        page = this.pages.getPage(ctx.params.page + '.' + this._getLocale(ctx))
       } else {
         page = this.pages.getPage('404')
       }
@@ -144,7 +144,7 @@ export default class Mudawanah {
   }
 
   private _resolve(path: string) {
-    return this.mountPoint === undefined ? path : this.mountPoint + path
+    return this.mountPoint === undefined ? '/' + path : this.mountPoint + '/' + path
   }
 
   private _viewLocals(locale: string, additionals?: any) {
