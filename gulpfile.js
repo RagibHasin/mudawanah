@@ -11,8 +11,10 @@ const tsc = tsProj()
 const dest = './bin'
 
 gulp.task('build-helper', (cb) => {
-  const tsProj = ts.createProject('tsconfig.json',
-    { declaration: false, target: 'es5' })
+  const tsProj = ts.createProject({
+    declaration: false,
+    target: 'es5'
+  })
   const tsc = tsProj()
   gulp.src('./src/client*.ts').pipe(tsc)
   pump(
@@ -39,6 +41,10 @@ gulp.task('watch', () => {
 
 gulp.task('tslint', () => {
   return tsProj.src()
-    .pipe(tslint({ formatter: 'prose' }))
-    .pipe(tslint.report({ emitError: false }))
+    .pipe(tslint({
+      formatter: 'prose'
+    }))
+    .pipe(tslint.report({
+      emitError: false
+    }))
 })
