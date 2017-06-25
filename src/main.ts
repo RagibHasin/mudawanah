@@ -97,11 +97,7 @@ export default class Mudawanah {
     this.blog.get('/', async (ctx, next) => {
       await next()
 
-      let locale = ctx.cookies.get('mudawanah-locale')
-      if (locale === undefined) {
-        locale = this.config.global.defaultLocale
-        ctx.cookies.set('mudawanah-locale', locale)
-      }
+      const locale = this._getLocale(ctx)
 
       const tempPosts = this.posts.getPostsByLocale(locale)
       if (this.composedIndexMiddleware !== undefined) {
@@ -126,7 +122,7 @@ export default class Mudawanah {
     this.blog.get('/post/:uri', async (ctx, next) => {
       await next()
 
-      const post = this.posts.getPostFromUrl(ctx.params.uri)
+      const post = this.posts.getPostFromUrl(ctx.params.uri, this._getLocale(ctx))
 
       if (post) {
         await this._renderPost(ctx, post)

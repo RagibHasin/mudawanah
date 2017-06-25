@@ -26,6 +26,8 @@ const mudawanah = {
     setCookie(`mudawanah.${mudawanah.uid}.locale`, locale, 365)
 }
 
-$('mudawanahTranslate').each((idx, elem) => {
-  $(elem).click(e => mudawanah.setLocale($(elem).attr('data-locale-name')))
+$('body').on('load', e => {
+  $('#mudawanahTranslate').each((idx, elem) => {
+    $(elem).click(e1 => mudawanah.setLocale($(elem).attr('data-locale-name')))
+  })
 })

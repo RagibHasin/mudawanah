@@ -25,7 +25,7 @@ export default class Posts {
   private readonly config: IConfig
 
   // url to qualified id
-  private postsMap: { [url: string]: string } = {}
+  private postsMap: { [url: string]: { [locale: string]: string } } = {}
   // qualified id to metaPosts
   private posts: { [fullId: string]: IPost } = {}
   // list of unqualified id by locale
@@ -66,7 +66,10 @@ export default class Posts {
       meta.view = removeMarkdown(postData[1].split(os.EOL + os.EOL, 1)[0], { gfm: true })
 
       for (const url of meta.url) {
-        this.postsMap[url] = `${meta.id}.${meta.locale}`
+        if (this.postsMap[url] === undefined) {
+          this.postsMap[url] = {}
+        }
+        this.postsMap[url][meta.locale] = meta.id
       }
 
       if (this.localesOfPost[meta.id] === undefined) {
@@ -101,9 +104,9 @@ export default class Posts {
     return ret
   }
 
-  getPostFromUrl(url: string) {
-    if (this.postsMap[url]) {
-      return this.posts[this.postsMap[url]]
+  getPostFromUrl(url: string, locale: string) {
+    if (this.postsMap[url] && this.postsMap[url][locale]) {
+      return this.posts[this.postsMap[url][locale] + '.' + locale]
     }
   }
 
