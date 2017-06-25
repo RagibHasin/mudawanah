@@ -108,9 +108,13 @@ export default class Mudawanah {
         await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
       }
 
-      const translations: any = {}
+      let translations: any = {}
       for (const gLocale in this.config.global.locales) {
-        translations[gLocale] = this._resolve('')
+        translations[gLocale] = this._resolve('/')
+      }
+      delete translations[locale]
+      if (Object.keys(translations).length === 0) {
+        translations = undefined
       }
 
       await ctx.render('index', this._viewLocals(locale, {
@@ -127,7 +131,7 @@ export default class Mudawanah {
       if (post) {
         await this._renderPost(ctx, post)
       } else {
-        await this._renderPage(ctx, this.pages.getPage('404'))
+        await this._render404(ctx)
       }
     })
 
@@ -138,21 +142,18 @@ export default class Mudawanah {
         ctx.redirect(this.mountPoint)
       }
 
-      let page: IPage
-
       if (ctx.params.page === 'assets') {
-        page = this.pages.getPage('404')
+        await this._render404(ctx)
       } else if (this.config.global.pages.includes(ctx.params.page)) {
-        page = this.pages.getPage(ctx.params.page + '.' + this._getLocale(ctx))
+        await this._renderPage(ctx, this.pages.getPage(ctx.params.page + '.' + this._getLocale(ctx)))
       } else {
-        page = this.pages.getPage('404')
+        await this._render404(ctx)
       }
-      await this._renderPage(ctx, page)
     })
   }
 
   private _resolve(path: string) {
-    return this.mountPoint === undefined ? '/' + path : this.mountPoint + '/' + path
+    return this.mountPoint === undefined ? path : this.mountPoint + path
   }
 
   private _viewLocals(locale: string, additionals?: any) {
@@ -162,7 +163,7 @@ export default class Mudawanah {
       locale: this.config.locales[locale],
       dict: this.config.locales[locale].dictionary,
       resolve: this._resolve.bind(this),
-      injectionScript: expand(fs.readFileSync('clientInjection.js', 'utf8'),
+      injectionScript: expand(fs.readFileSync(pJoin(__dirname, 'clientInjection.js'), 'utf8'),
         { uid: this.config.global.uid }, { opening: '#{', closing: '}' })
     }
     if (additionals === undefined) {
@@ -180,15 +181,23 @@ export default class Mudawanah {
     return locale
   }
 
+  private async _render404(ctx: route.IRouterContext) {
+    await this._renderPage(ctx, this.pages.getPage('404.' + this._getLocale(ctx)))
+  }
+
   private async _renderPage(ctx: route.IRouterContext, page: IPage) {
     const locale = this._getLocale(ctx)
     if (this.composedPageMiddleware !== undefined) {
       await this.composedPageMiddleware(page, this.config, async () => { })
     }
 
-    const translations: any = {}
+    let translations: any = {}
     for (const gLocale in this.config.global.locales) {
-      translations[gLocale] = this._resolve(page.id)
+      translations[gLocale] = this._resolve('/' + page.id)
+    }
+    delete translations[locale]
+    if (Object.keys(translations).length === 0) {
+      translations = undefined
     }
 
     await ctx.render('page', this._viewLocals(locale, {
@@ -206,8 +215,11 @@ export default class Mudawanah {
       await this.composedPostMiddleware(post, this.config, async () => { })
     }
 
-    const translations = this.posts.getLocalesOfPost(post.id)
-    delete translations[post.id]
+    let translations: any = this.posts.getLocalesOfPost(post.id)
+    delete translations[locale]
+    if (Object.keys(translations).length === 0) {
+      translations = undefined
+    }
 
     await ctx.render('post', this._viewLocals(locale, {
       post: post,
