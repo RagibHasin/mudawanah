@@ -86,6 +86,10 @@ export default class Mudawanah {
       this.assetsMount = mount('/assets', serve(this.config.global.assetsDir))
     }
 
+    if (!fs.existsSync(this.config.global.tempDir)) {
+      fs.mkdirSync(this.config.global.tempDir)
+    }
+
     this.blog = new route({ prefix: mountPoint })
     this.blog.use(view(this.config.global.templatesDir, { extension: 'pug' }))
 
@@ -211,8 +215,13 @@ export default class Mudawanah {
       await this.composedPostMiddleware(post, this.config, async () => { })
     }
 
-    let translations: any = this.posts.getLocalesOfPost(post.id)
-    delete translations[locale]
+    let translations: any = {}
+    const dummyTranslate = this.posts.getLocalesOfPost(post.id)
+    for (const gLocale in dummyTranslate) {
+      if (gLocale !== locale) {
+        translations[gLocale] = this._resolve('/post/' + dummyTranslate[gLocale])
+      }
+    }
     if (Object.keys(translations).length === 0) {
       translations = undefined
     }

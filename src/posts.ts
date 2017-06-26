@@ -38,6 +38,10 @@ export default class Posts {
 
     const dataDir = this.config.global.dataDir
 
+    if (!fs.existsSync(pJoin(config.global.tempDir, 'posts'))) {
+      fs.mkdirSync(pJoin(config.global.tempDir, 'posts'))
+    }
+
     const md = markdownIt('commonmark', {
       highlight: (str, lang) => {
         if (lang && hilight.getLanguage(lang)) {

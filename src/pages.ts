@@ -24,6 +24,10 @@ export default class Pages {
   constructor(config: IConfig) {
     this.config = config
 
+    if (!fs.existsSync(pJoin(config.global.tempDir, 'pages'))) {
+      fs.mkdirSync(pJoin(config.global.tempDir, 'pages'))
+    }
+
     const dataDir = this.config.global.dataDir
 
     const md = markdownIt('commonmark', {
