@@ -70,6 +70,11 @@ export default class Mudawanah {
    */
   constructor(dataDir: string, mountPoint?: string) {
     this.config = Config(dataDir)
+
+    if (!fs.existsSync(this.config.global.tempDir)) {
+      fs.mkdirSync(this.config.global.tempDir)
+    }
+
     this.posts = new Posts(this.config)
     this.pages = new Pages(this.config)
 
@@ -84,10 +89,6 @@ export default class Mudawanah {
       this.assetsMount = mount(mountPoint + '/assets', serve(this.config.global.assetsDir))
     } else {
       this.assetsMount = mount('/assets', serve(this.config.global.assetsDir))
-    }
-
-    if (!fs.existsSync(this.config.global.tempDir)) {
-      fs.mkdirSync(this.config.global.tempDir)
     }
 
     this.blog = new route({ prefix: mountPoint })
