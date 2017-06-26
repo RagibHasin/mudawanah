@@ -165,7 +165,7 @@ export default class Mudawanah {
       dict: this.config.locales[locale].dictionary,
       resolve: this._resolve.bind(this),
       injectionScript: expand(fs.readFileSync(pJoin(__dirname, 'clientInjection.js'), 'utf8'),
-        { uid: this.config.global.uid }, { opening: '#{', closing: '}' })
+        { uid: this.config.global.uid, mountPoint: this.mountPoint }, { opening: '#{', closing: '}' })
     }
     if (additionals === undefined) {
       return base

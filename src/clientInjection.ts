@@ -47,6 +47,7 @@ const docCookies = {
 
 const mudawanah = {
   uid: '#{uid}',
+  mountPoint: '#{mountPoint}',
   setLocale: (locale: string) =>
-    docCookies.setItem(`mudawanah.${mudawanah.uid}.locale`, locale, Infinity)
+    docCookies.setItem(`mudawanah.${mudawanah.uid}.locale`, locale, Infinity, mudawanah.mountPoint)
 }
