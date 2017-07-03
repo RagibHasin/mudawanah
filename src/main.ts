@@ -123,7 +123,7 @@ export default class Mudawanah {
 
       let translations: any = {}
       for (const gLocale in this.config.global.locales) {
-        translations[gLocale] = this._resolve(locale, '/')
+        translations[gLocale] = this._resolve(gLocale, '/')
       }
       delete translations[locale]
       if (Object.keys(translations).length === 0) {
@@ -196,7 +196,7 @@ export default class Mudawanah {
 
     let translations: any = {}
     for (const gLocale in this.config.global.locales) {
-      translations[gLocale] = this._resolve(locale, '/' + page.id)
+      translations[gLocale] = this._resolve(gLocale, '/' + page.id)
     }
     delete translations[locale]
     if (Object.keys(translations).length === 0) {
@@ -218,7 +218,7 @@ export default class Mudawanah {
     const dummyTranslate = this.posts.getLocalesOfPost(post.id)
     for (const gLocale in dummyTranslate) {
       if (gLocale !== locale) {
-        translations[gLocale] = this._resolve(locale, '/post/' + dummyTranslate[gLocale])
+        translations[gLocale] = this._resolve(gLocale, '/post/' + dummyTranslate[gLocale])
       }
     }
     if (Object.keys(translations).length === 0) {
