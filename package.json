@@ -1,6 +1,6 @@
 {
   "name": "mudawanah",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "A simple, plugin-based, minimalist, multilingual 😌 blog framework with Koa, Pug and TypeScript.",
   "cli": "./bin/cli.js",
   "main": "./bin/main.js",
@@ -29,7 +29,7 @@
   "author": "Muhammad Ragib Hasin <ragib.hasin@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^1.1.3",
+    "chalk": "^2.0.1",
     "expand-placeholder": "^1.0.2",
     "highlight.js": "^9.12.0",
     "inquirer": "^3.1.1",
@@ -39,7 +39,7 @@
     "koa-compose": "^4.0.0",
     "koa-mount": "^3.0.0",
     "koa-router": "^7.2.1",
-    "koa-static": "^3.0.0",
+    "koa-static": "^4.0.0",
     "koa-views": "^6.0.2",
     "markdown-it": "^8.3.1",
     "pug": "^2.0.0-rc.2",
@@ -50,12 +50,12 @@
     "@types/koa-router": "^7.0.22"
   },
   "devDependencies": {
-    "@types/chai": "^4.0.0",
+    "@types/chai": "^4.0.1",
     "@types/chai-as-promised": "^0.0.31",
     "@types/chalk": "^0.4.31",
     "@types/highlight.js": "^9.1.9",
     "@types/inquirer": "0.0.35",
-    "@types/jquery": "^3.2.4",
+    "@types/jquery": "^3.2.5",
     "@types/js-yaml": "^3.5.31",
     "@types/koa": "^2.0.39",
     "@types/koa-compose": "^3.2.2",
@@ -64,17 +64,17 @@
     "@types/koa-views": "^2.0.1",
     "@types/markdown-it": "0.0.2",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.2",
+    "@types/node": "^8.0.7",
     "@types/source-map-support": "^0.4.0",
-    "@types/yargs": "^6.6.0",
+    "@types/yargs": "^8.0.0",
     "chai": "^4.0.2",
-    "chai-as-promised": "^7.0.0",
+    "chai-as-promised": "^7.1.0",
     "concurrently": "^3.5.0",
     "coveralls": "^2.13.1",
-    "eslint": "^4.0.0",
+    "eslint": "^4.1.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "gulp": "^3.9.1",
@@ -89,6 +89,6 @@
     "remap-istanbul": "^0.9.5",
     "source-map-support": "^0.4.15",
     "tslint": "^5.4.3",
-    "typescript": "^2.3.4"
+    "typescript": "^2.4.1"
   }
 }
