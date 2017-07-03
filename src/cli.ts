@@ -9,13 +9,13 @@ yargs
   .command('init [dir]', 'initialize a new Mudawanah', args => args, init)
   .command('generate [src] <out>', 'generate a static build', args => args, gen)
 
-function init(args: { dir?: string }) {
+function init(args: { dir?: string } & yargs.Arguments) {
   if (args.dir === undefined) {
     args.dir = '.'
   }
 
 }
 
-function gen(args: { src?: string, out: string }) {
+function gen(args: { src?: string, out: string } & yargs.Arguments) {
 
 }
