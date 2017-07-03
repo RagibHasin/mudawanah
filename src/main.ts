@@ -102,7 +102,13 @@ export default class Mudawanah {
     this.blog.get('/', async (ctx, next) => {
       await next()
 
-      const locale = this._getLocale(ctx)
+      ctx.redirect(this.config.global.defaultLocale)
+    })
+
+    this.blog.get('/:locale', async (ctx, next) => {
+      await next()
+
+      const locale = ctx.params.locale
 
       const tempPosts = this.posts.getPostsByLocale(locale)
       if (this.composedIndexMiddleware !== undefined) {
@@ -111,7 +117,7 @@ export default class Mudawanah {
 
       let translations: any = {}
       for (const gLocale in this.config.global.locales) {
-        translations[gLocale] = this._resolve('/')
+        translations[gLocale] = this._resolve(locale, '/')
       }
       delete translations[locale]
       if (Object.keys(translations).length === 0) {
@@ -124,19 +130,19 @@ export default class Mudawanah {
       }))
     })
 
-    this.blog.get('/post/:uri', async (ctx, next) => {
+    this.blog.get('/:locale/post/:uri', async (ctx, next) => {
       await next()
 
-      const post = this.posts.getPostFromUrl(ctx.params.uri, this._getLocale(ctx))
+      const post = this.posts.getPostFromUrl(ctx.params.uri, ctx.params.locale)
 
       if (post) {
-        await this._renderPost(ctx, post)
+        await this._renderPost(ctx, ctx.params.locale, post)
       } else {
-        await this._render404(ctx)
+        await this._render404(ctx, ctx.params.locale)
       }
     })
 
-    this.blog.get('/:page', async (ctx, next) => {
+    this.blog.get('/:locale/:page', async (ctx, next) => {
       await next()
 
       if (ctx.params.page === 'post') {
@@ -144,17 +150,18 @@ export default class Mudawanah {
       }
 
       if (ctx.params.page === 'assets') {
-        await this._render404(ctx)
+        await this._render404(ctx, ctx.params.locale)
       } else if (this.config.global.pages.includes(ctx.params.page)) {
-        await this._renderPage(ctx, this.pages.getPage(ctx.params.page + '.' + this._getLocale(ctx)))
+        await this._renderPage(ctx, ctx.params.locale, this.pages.getPage(ctx.params.page + '.' + ctx.params.locale))
       } else {
-        await this._render404(ctx)
+        await this._render404(ctx, ctx.params.locale)
       }
     })
   }
 
-  private _resolve(path: string) {
-    return this.mountPoint === undefined ? path : this.mountPoint + path
+  private _resolve(locale: string, path: string) {
+    return this.mountPoint === undefined ? '/' + locale + path
+      : this.mountPoint + '/' + locale + path
   }
 
   private _viewLocals(locale: string, additionals?: any) {
@@ -163,9 +170,7 @@ export default class Mudawanah {
       usedPlugins: this.config.plugins,
       locale: this.config.locales[locale],
       dict: this.config.locales[locale].dictionary,
-      resolve: this._resolve.bind(this),
-      injectionScript: expand(fs.readFileSync(pJoin(__dirname, 'clientInjection.js'), 'utf8'),
-        { uid: this.config.global.uid, mountPoint: this.mountPoint }, { opening: '#{', closing: '}' })
+      resolve: this._resolve.bind(this, locale)
     }
     if (additionals === undefined) {
       return base
@@ -173,28 +178,15 @@ export default class Mudawanah {
     return Object.assign(base, additionals)
   }
 
-  private _getLocale(ctx: route.IRouterContext) {
-    let locale = ctx.cookies.get(`mudawanah.${this.config.global.uid}.locale`)
-    if (locale === undefined) {
-      locale = this.config.global.defaultLocale
-      ctx.cookies.set(`mudawanah.${this.config.global.uid}.locale`, locale)
-    }
-    return locale
+  private async _render404(ctx: route.IRouterContext, locale: string) {
+    await this._renderPage(ctx, locale, this.pages.getPage('404.' + locale))
   }
 
-  private async _render404(ctx: route.IRouterContext) {
-    await this._renderPage(ctx, this.pages.getPage('404.' + this._getLocale(ctx)))
-  }
-
-  private async _renderPage(ctx: route.IRouterContext, page: IPage) {
-    const locale = this._getLocale(ctx)
-    if (this.composedPageMiddleware !== undefined) {
-      await this.composedPageMiddleware(page, this.config, async () => { })
-    }
+  private async _renderPage(ctx: route.IRouterContext, locale: string, page: IPage) {
 
     let translations: any = {}
     for (const gLocale in this.config.global.locales) {
-      translations[gLocale] = this._resolve('/' + page.id)
+      translations[gLocale] = this._resolve(locale, '/' + page.id)
     }
     delete translations[locale]
     if (Object.keys(translations).length === 0) {
@@ -210,17 +202,13 @@ export default class Mudawanah {
     }))
   }
 
-  private async _renderPost(ctx: route.IRouterContext, post: IPost) {
-    const locale = this._getLocale(ctx)
-    if (this.composedPostMiddleware !== undefined) {
-      await this.composedPostMiddleware(post, this.config, async () => { })
-    }
+  private async _renderPost(ctx: route.IRouterContext, locale: string, post: IPost) {
 
     let translations: any = {}
     const dummyTranslate = this.posts.getLocalesOfPost(post.id)
     for (const gLocale in dummyTranslate) {
       if (gLocale !== locale) {
-        translations[gLocale] = this._resolve('/post/' + dummyTranslate[gLocale])
+        translations[gLocale] = this._resolve(locale, '/post/' + dummyTranslate[gLocale])
       }
     }
     if (Object.keys(translations).length === 0) {
