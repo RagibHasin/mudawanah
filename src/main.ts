@@ -110,6 +110,11 @@ export default class Mudawanah {
 
       const locale = ctx.params.locale
 
+      if (!this.config.global.locales.hasOwnProperty(locale)) {
+        ctx.redirect('/')
+        return
+      }
+
       const tempPosts = this.posts.getPostsByLocale(locale)
       if (this.composedIndexMiddleware !== undefined) {
         await this.composedIndexMiddleware(tempPosts, this.config, async () => { })
