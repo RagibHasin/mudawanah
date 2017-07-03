@@ -101,8 +101,8 @@ export default class Mudawanah {
 
     this.blog.get('/', async (ctx, next) => {
       await next()
-
-      ctx.redirect(this.config.global.defaultLocale)
+      ctx.redirect((this.mountPoint === undefined ? '' : this.mountPoint)
+        + '/' + this.config.global.defaultLocale)
     })
 
     this.blog.get('/:locale', async (ctx, next) => {
@@ -111,7 +111,8 @@ export default class Mudawanah {
       const locale = ctx.params.locale
 
       if (!this.config.global.locales.hasOwnProperty(locale)) {
-        ctx.redirect('/')
+        ctx.redirect((this.mountPoint === undefined ? '' : this.mountPoint)
+          + '/' + this.config.global.defaultLocale)
         return
       }
 
@@ -165,8 +166,11 @@ export default class Mudawanah {
   }
 
   private _resolve(locale: string, path: string) {
-    return this.mountPoint === undefined ? '/' + locale + path
-      : this.mountPoint + '/' + locale + path
+    return (this.mountPoint === undefined ? '' : this.mountPoint) + '/' + locale + path
+  }
+
+  private _asset(item: string) {
+    return (this.mountPoint === undefined ? '' : this.mountPoint) + '/assets/' + item
   }
 
   private _viewLocals(locale: string, additionals?: any) {
@@ -175,7 +179,8 @@ export default class Mudawanah {
       usedPlugins: this.config.plugins,
       locale: this.config.locales[locale],
       dict: this.config.locales[locale].dictionary,
-      resolve: this._resolve.bind(this, locale)
+      resolve: this._resolve.bind(this, locale),
+      asset: this._asset.bind(this)
     }
     if (additionals === undefined) {
       return base
