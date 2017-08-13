@@ -1,6 +1,6 @@
 {
   "name": "mudawanah",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "A simple, plugin-based, minimalist, multilingual 😌 blog framework with Koa, Pug and TypeScript.",
   "cli": "./bin/cli.js",
   "main": "./bin/main.js",
@@ -42,6 +42,7 @@
     "koa-static": "^4.0.0",
     "koa-views": "^6.0.2",
     "markdown-it": "^8.3.1",
+    "markdown-it-mathjax": "^2.0.0",
     "pug": "^2.0.0-rc.2",
     "remove-markdown": "^0.2.0",
     "yargs": "^8.0.2"

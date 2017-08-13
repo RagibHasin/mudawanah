@@ -3,6 +3,7 @@ import * as os from 'os'
 import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
+import * as markdownItMathjax from 'markdown-it-mathjax'
 
 import { join as pJoin } from 'path'
 
@@ -39,7 +40,7 @@ export default class Pages {
         }
         return ''
       }
-    })
+    }).use(markdownItMathjax())
 
     const pageFiles = fs.readdirSync(pJoin(dataDir, 'pages'))
 

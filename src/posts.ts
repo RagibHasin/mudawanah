@@ -4,6 +4,7 @@ import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
 import * as removeMarkdown from 'remove-markdown'
+import * as markdownItMathjax from 'markdown-it-mathjax'
 
 import { join as pJoin } from 'path'
 
@@ -51,7 +52,7 @@ export default class Posts {
         }
         return ''
       }
-    })
+    }).use(markdownItMathjax())
 
     const postFiles = fs.readdirSync(pJoin(dataDir, 'posts'))
 
