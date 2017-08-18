@@ -12,20 +12,22 @@ import { join as pJoin } from 'path'
 import Config, { IConfig } from './config'
 import Posts, { IPost } from './posts'
 import Pages, { IPage } from './pages'
-import compose, { Middleware } from './compose'
+import compose, { Middleware, RendererPlugin } from './pluginsHelper'
 
 export { IConfig, IGlobalConfig, ILocaleConfig, IPluginsConfig } from './config'
 export { IPage } from './pages'
 export { IPost } from './posts'
 
 export interface IPlugin {
-  index?: Middleware<IPost[]>
-  post?: Middleware<IPost>
-  page?: Middleware<IPage>
+  indexServe?: Middleware<IPost[]>
+  postServe?: Middleware<IPost>
+  pageServe?: Middleware<IPage>
+  postRender?: RendererPlugin<IPost>
+  pageRender?: RendererPlugin<IPage>
   static?: {
     index?: Middleware<IPost[]>
-    post?: Middleware<IPost>
-    page?: Middleware<IPage>
+    post?: RendererPlugin<IPost>
+    page?: RendererPlugin<IPage>
     initialize(initable: {
       routes: route,
       config: IConfig,
@@ -55,6 +57,8 @@ export default class Mudawanah {
   private readonly indexMiddlewares: Middleware<IPost[]>[] = []
   private readonly postMiddlewares: Middleware<IPost>[] = []
   private readonly pageMiddlewares: Middleware<IPage>[] = []
+  private readonly postRendererPlugins: RendererPlugin<IPost>[] = []
+  private readonly pageRendererPlugins: RendererPlugin<IPage>[] = []
 
   private composedIndexMiddleware: Middleware<IPost[]>
   private composedPostMiddleware: Middleware<IPost>
@@ -243,16 +247,16 @@ export default class Mudawanah {
    */
   use(plugin: IPlugin) {
     this.plugins.push(plugin)
-    if (plugin.index) {
-      this.indexMiddlewares.push(plugin.index)
+    if (plugin.indexServe) {
+      this.indexMiddlewares.push(plugin.indexServe)
       this.composedIndexMiddleware = compose(this.indexMiddlewares)
     }
-    if (plugin.post) {
-      this.postMiddlewares.push(plugin.post)
+    if (plugin.postServe) {
+      this.postMiddlewares.push(plugin.postServe)
       this.composedPostMiddleware = compose(this.postMiddlewares)
     }
-    if (plugin.page) {
-      this.pageMiddlewares.push(plugin.page)
+    if (plugin.pageServe) {
+      this.pageMiddlewares.push(plugin.pageServe)
       this.composedPageMiddleware = compose(this.pageMiddlewares)
     }
     plugin.initialize({

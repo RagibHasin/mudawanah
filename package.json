@@ -1,6 +1,6 @@
 {
   "name": "mudawanah",
-  "version": "0.2.19",
+  "version": "0.3.0",
   "description": "A simple, plugin-based, minimalist, multilingual 😌 blog framework with Koa, Pug and TypeScript.",
   "cli": "./bin/cli.js",
   "main": "./bin/main.js",

@@ -45,6 +45,11 @@ export interface IConfig {
   locales: { [locale: string]: ILocaleConfig }
 }
 
+export interface IMarkdownItPlugin {
+  fn: (md: any, options: any) => void
+  options?: any[] | any
+}
+
 function fixDictionary(dict: IDictionary, locale: string) {
   for (const key in dict) {
 

@@ -4,11 +4,11 @@ import * as yml from 'js-yaml'
 import * as hilight from 'highlight.js'
 import * as markdownIt from 'markdown-it'
 import * as removeMarkdown from 'remove-markdown'
-import * as markdownItMathjax from 'markdown-it-mathjax'
 
 import { join as pJoin } from 'path'
 
 import Config, { IConfig } from './config'
+import { RendererPlugin } from './pluginsHelper'
 
 export interface IPost {
   title: string
@@ -18,12 +18,14 @@ export interface IPost {
   url: string[]
   tags?: string[]
   view?: string
+  md: string
   pluginsData?: { [plugin: string]: any }
 }
 
 export default class Posts {
 
   private readonly config: IConfig
+  private renderer: markdownIt.MarkdownIt
 
   // url to qualified id
   private postsMap: { [url: string]: { [locale: string]: string } } = {}
@@ -36,14 +38,7 @@ export default class Posts {
 
   constructor(config: IConfig) {
     this.config = config
-
-    const dataDir = this.config.global.dataDir
-
-    if (!fs.existsSync(pJoin(config.global.tempDir, 'posts'))) {
-      fs.mkdirSync(pJoin(config.global.tempDir, 'posts'))
-    }
-
-    const md = markdownIt('commonmark', {
+    this.renderer = markdownIt('commonmark', {
       highlight: (str, lang) => {
         if (lang && hilight.getLanguage(lang)) {
           try {
@@ -52,7 +47,13 @@ export default class Posts {
         }
         return ''
       }
-    }).use(markdownItMathjax())
+    })
+
+    const dataDir = this.config.global.dataDir
+
+    if (!fs.existsSync(pJoin(config.global.tempDir, 'posts'))) {
+      fs.mkdirSync(pJoin(config.global.tempDir, 'posts'))
+    }
 
     const postFiles = fs.readdirSync(pJoin(dataDir, 'posts'))
 
@@ -65,9 +66,7 @@ export default class Posts {
         .split(os.EOL + os.EOL + os.EOL + os.EOL, 2)
       const meta: IPost = yml.safeLoad(postData[0])
 
-      fs.writeFileSync(pJoin(config.global.tempDir, 'posts', `${meta.id}.${meta.locale}.html`),
-        md.render(postData[1]), 'utf8')
-
+      meta.md = postData[1]
       meta.view = removeMarkdown(postData[1].split(os.EOL + os.EOL, 1)[0], { gfm: true })
 
       for (const url of meta.url) {
@@ -95,6 +94,22 @@ export default class Posts {
         this.postByLocale[meta.locale] = []
       }
       this.postByLocale[meta.locale].push(meta.id)
+    }
+
+    this.render([])
+  }
+
+  render(plugins: RendererPlugin<IPost>[]) {
+    for (const post in this.posts) {
+      // Prepare renderer
+      let renderer = this.renderer
+      for (const plugin of plugins) {
+        renderer = plugin(this.posts[post], renderer)
+      }
+
+      fs.writeFileSync(pJoin(this.config.global.tempDir, 'posts',
+        `${this.posts[post].id}.${this.posts[post].locale}.html`),
+        renderer.render(this.posts[post].md), 'utf8')
     }
   }
 
