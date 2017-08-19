@@ -259,6 +259,14 @@ export default class Mudawanah {
       this.pageMiddlewares.push(plugin.pageServe)
       this.composedPageMiddleware = compose(this.pageMiddlewares)
     }
+    if (plugin.postRender) {
+      this.postRendererPlugins.push(plugin.postRender)
+      this.posts.render(this.postRendererPlugins)
+    }
+    if (plugin.pageRender) {
+      this.pageRendererPlugins.push(plugin.pageRender)
+      this.pages.render(this.pageRendererPlugins)
+    }
     plugin.initialize({
       config: this.config,
       routes: this.blog,
