@@ -248,23 +248,23 @@ export default class Mudawanah {
   use(plugin: IPlugin) {
     this.plugins.push(plugin)
     if (plugin.indexServe) {
-      this.indexMiddlewares.push(plugin.indexServe)
+      this.indexMiddlewares.push(plugin.indexServe.bind(plugin))
       this.composedIndexMiddleware = compose(this.indexMiddlewares)
     }
     if (plugin.postServe) {
-      this.postMiddlewares.push(plugin.postServe)
+      this.postMiddlewares.push(plugin.postServe.bind(plugin))
       this.composedPostMiddleware = compose(this.postMiddlewares)
     }
     if (plugin.pageServe) {
-      this.pageMiddlewares.push(plugin.pageServe)
+      this.pageMiddlewares.push(plugin.pageServe.bind(plugin))
       this.composedPageMiddleware = compose(this.pageMiddlewares)
     }
     if (plugin.postRender) {
-      this.postRendererPlugins.push(plugin.postRender)
+      this.postRendererPlugins.push(plugin.postRender.bind(plugin))
       this.posts.render(this.postRendererPlugins)
     }
     if (plugin.pageRender) {
-      this.pageRendererPlugins.push(plugin.pageRender)
+      this.pageRendererPlugins.push(plugin.pageRender.bind(plugin))
       this.pages.render(this.pageRendererPlugins)
     }
     plugin.initialize({
