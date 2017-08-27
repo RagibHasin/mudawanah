@@ -1,8 +1,6 @@
 # Mudawanah
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/RagibHasin/mudawanah.svg)](https://greenkeeper.io/)
-
-**A simple, plugin-based, minimalist, multilingual 😌 blog framework with Koa, Pug and TypeScript**.
+**A simple, plugin-based, minimalist, multilingual  blog framework with Koa, Pug and TypeScript**.
 
 [![npm](https://img.shields.io/npm/v/mudawanah.svg)](https://www.npmjs.com/package/mudawanah)
 [![Build Status](https://travis-ci.org/RagibHasin/mudawanah.svg?branch=master)](https://travis-ci.org/RagibHasin/mudawanah)
