@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.0.3",
-    "@types/chai-as-promised": "^0.0.31",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/chalk": "^0.4.31",
     "@types/highlight.js": "^9.1.9",
     "@types/inquirer": "0.0.35",
