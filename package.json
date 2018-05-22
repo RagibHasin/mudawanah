@@ -36,7 +36,7 @@
     "intl": "^1.2.5",
     "js-yaml": "^3.9.1",
     "koa": "^2.3.0",
-    "koa-compose": "^4.0.0",
+    "koa-compose": "4.0.0",
     "koa-mount": "^3.0.0",
     "koa-router": "^7.2.1",
     "koa-static": "^4.0.1",
