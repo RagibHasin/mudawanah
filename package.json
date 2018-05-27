@@ -66,7 +66,7 @@
     "@types/markdown-it": "0.0.3",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.26",
-    "@types/source-map-support": "^0.4.0",
+    "@types/source-map-support": "^0.4.1",
     "@types/yargs": "^8.0.2",
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
