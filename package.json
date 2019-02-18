@@ -85,7 +85,7 @@
     "gulp-uglify": "^3.0.0",
     "istanbul": "~0.4.5",
     "merge-stream": "^1.0.1",
-    "mocha": "^3.5.0",
+    "mocha": "^6.0.0",
     "pump": "^1.0.2",
     "remap-istanbul": "^0.9.5",
     "source-map-support": "^0.4.15",
