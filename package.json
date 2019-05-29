@@ -31,7 +31,7 @@
   "dependencies": {
     "chalk": "^2.1.0",
     "expand-placeholder": "^1.0.2",
-    "highlight.js": "^9.12.0",
+    "highlight.js": "^9.15.7",
     "inquirer": "^3.2.1",
     "intl": "^1.2.5",
     "js-yaml": "^3.9.1",
