@@ -48,7 +48,7 @@
     "yargs": "^8.0.2"
   },
   "optionalDependencies": {
-    "@types/koa-router": "^7.0.22"
+    "@types/koa-router": "^7.0.42"
   },
   "devDependencies": {
     "@types/chai": "^4.0.3",
