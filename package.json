@@ -64,7 +64,7 @@
     "@types/koa-static": "^3.0.0",
     "@types/koa-views": "^2.0.1",
     "@types/markdown-it": "0.0.3",
-    "@types/mocha": "^2.2.41",
+    "@types/mocha": "^7.0.1",
     "@types/node": "^8.0.26",
     "@types/source-map-support": "^0.4.0",
     "@types/yargs": "^8.0.2",
